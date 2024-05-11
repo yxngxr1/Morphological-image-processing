@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1086</width>
-    <height>709</height>
+    <width>1017</width>
+    <height>573</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>776</width>
-    <height>513</height>
+    <width>800</width>
+    <height>500</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,13 @@
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="label_load_image">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -42,7 +48,13 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="label_processed_image">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -66,7 +78,7 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>220</width>
+          <width>200</width>
           <height>16777215</height>
          </size>
         </property>
@@ -167,7 +179,7 @@
           <string>Ч/Б</string>
          </property>
         </widget>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="combo_box_alg">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -200,6 +212,22 @@
           <string>Способ обработки:</string>
          </property>
         </widget>
+        <widget class="QSlider" name="horizontalSlider">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>270</y>
+           <width>160</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -224,7 +252,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1086</width>
+     <width>1017</width>
      <height>21</height>
     </rect>
    </property>
