@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1017</width>
-    <height>573</height>
+    <width>1004</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -60,6 +60,9 @@
           <pointsize>12</pointsize>
          </font>
         </property>
+        <property name="toolTip">
+         <string comment="выграыш угшрыш"/>
+        </property>
         <property name="text">
          <string>Изображение после обработки</string>
         </property>
@@ -90,12 +93,21 @@
           <rect>
            <x>10</x>
            <y>30</y>
-           <width>82</width>
+           <width>121</width>
            <height>17</height>
           </rect>
          </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;В результате применения операции эрозии все объекты, меньшие чем структурный элемент, стираются, объекты, соединённые тонкими линиями становятся разъединёнными и размеры всех объектов уменьшаются.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="toolTipDuration">
+          <number>-1</number>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
          <property name="text">
-          <string>Сужение</string>
+          <string>Сужение (Эрозия)</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -106,12 +118,15 @@
           <rect>
            <x>10</x>
            <y>50</y>
-           <width>82</width>
+           <width>161</width>
            <height>17</height>
           </rect>
          </property>
+         <property name="toolTip">
+          <string>Увеличение контуров</string>
+         </property>
          <property name="text">
-          <string>Расширение</string>
+          <string>Расширение (Наращивание)</string>
          </property>
         </widget>
         <widget class="QRadioButton" name="radio_opening">
@@ -119,12 +134,15 @@
           <rect>
            <x>10</x>
            <y>70</y>
-           <width>82</width>
+           <width>161</width>
            <height>17</height>
           </rect>
          </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Размыкание отсеивает все объекты, меньшие чем структурный элемент, но при этом помогает избежать сильного уменьшения размера объектов. Также размыкание идеально подходит для удаления линий, толщина которых меньше, чем диаметр структурного элемента. Также важно помнить, что после этой операции контуры объектов становятся более гладкими.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
-          <string>Открытие</string>
+          <string>Открытие (Размыкание)</string>
          </property>
         </widget>
         <widget class="QRadioButton" name="radio_closing">
@@ -132,20 +150,23 @@
           <rect>
            <x>10</x>
            <y>90</y>
-           <width>82</width>
+           <width>151</width>
            <height>17</height>
           </rect>
          </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Если к изображению применить сначала операцию наращивания, то мы сможем избавиться от малых дыр и щелей, но при этом произойдёт увеличение контура объекта. Избежать этого увеличения позволяет операция эрозия, выполненная сразу после наращивания с тем же структурным элементом.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
-          <string>Закрытие</string>
+          <string>Закрытие (Замыкание)</string>
          </property>
         </widget>
         <widget class="QPushButton" name="btn_process">
          <property name="geometry">
           <rect>
-           <x>90</x>
+           <x>10</x>
            <y>190</y>
-           <width>81</width>
+           <width>161</width>
            <height>23</height>
           </rect>
          </property>
@@ -170,8 +191,8 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>190</y>
-           <width>71</width>
+           <y>340</y>
+           <width>161</width>
            <height>23</height>
           </rect>
          </property>
@@ -212,20 +233,98 @@
           <string>Способ обработки:</string>
          </property>
         </widget>
-        <widget class="QSlider" name="horizontalSlider">
+        <widget class="QSlider" name="horizontal_slider">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>270</y>
-           <width>160</width>
-           <height>22</height>
+           <x>9</x>
+           <y>310</y>
+           <width>121</width>
+           <height>21</height>
           </rect>
          </property>
+         <property name="acceptDrops">
+          <bool>false</bool>
+         </property>
          <property name="maximum">
-          <number>100</number>
+          <number>10</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="pageStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+         <property name="tracking">
+          <bool>true</bool>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="invertedAppearance">
+          <bool>false</bool>
+         </property>
+         <property name="invertedControls">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>290</y>
+           <width>131</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Порог оттенка серого</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_slider_value">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>310</y>
+           <width>31</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <widget class="Line" name="line">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>260</y>
+           <width>161</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btn_negative">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>370</y>
+           <width>161</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Негатив</string>
          </property>
         </widget>
        </widget>
@@ -252,7 +351,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1017</width>
+     <width>1004</width>
      <height>21</height>
     </rect>
    </property>

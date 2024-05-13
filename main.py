@@ -22,6 +22,7 @@ class Morph(QMainWindow, Ui_MainWindow):
         self.pixmap_processed: QPixmap = None
         self.bitmap_load: np.ndarray = None
         self.bitmap_processed: np.ndarray = None
+        self.threshold: int = None
 
         self.structure: np.ndarray = np.array([
             [1, 1, 1],
@@ -33,12 +34,20 @@ class Morph(QMainWindow, Ui_MainWindow):
         self.btn_process.clicked.connect(self.process)
         self.btn_to_black.clicked.connect(self.to_black)
         self.btn_clear.clicked.connect(self.clear)
+        self.btn_negative.clicked.connect(self.negative)
 
         # menu buttons
         self.action_open.triggered.connect(self.open_image)
         self.action_save.triggered.connect(self.save_image)
 
+        # slider
+        self.horizontal_slider.valueChanged.connect(self.slider_update)
+        self.slider_update()
+
     def process(self):
+        if self.pixmap_load is None:
+            self.label_status.setText("Изображение не загружено")
+            return
         if self.bitmap_load is None:
             self.label_status.setText("Создайте бинарное изображение (Ч/Б)")
             return
@@ -67,31 +76,63 @@ class Morph(QMainWindow, Ui_MainWindow):
             elif self.radio_closing.isChecked():
                 self.bitmap_processed = binary_closing(self.bitmap_load, self.structure)
 
-        end_time = time.time()
-        elapsed_time = round(end_time - start_time, 3)
-        image = image_handler.get_image(self.bitmap_processed)
+        process_time = round(time.time() - start_time, 3)
+
+        start_time = time.time()
+        image = image_handler.get_image_by_bitmap(self.bitmap_processed)
+        draw_time = round(time.time() - start_time, 3)
+
         self.pixmap_processed = QPixmap.fromImage(image)
         self.set_pixmap_on_label(self.label_processed_image, self.pixmap_processed)
-        self.label_status.setText(f"Обработано ({elapsed_time}с)")
+        self.label_status.setText(f"Обработано за {process_time}с, отрисовка: {draw_time}с")
 
     def to_black(self):
         if self.pixmap_load is None:
             self.label_status.setText("Изображение не загружено")
             return
-        if self.bitmap_load is not None:
-            self.label_status.setText("Изображение уже в чб")
-            return
-        if image_handler.is_binary(self.pixmap_load):
-            self.label_status.setText("Изображение уже в чб")
+        # if self.bitmap_load is not None:
+        #     self.label_status.setText("Изображение уже в чб")
+        #     return
+        # if image_handler.is_binary(self.pixmap_load):
+        #     self.label_status.setText("Изображение уже в чб")
 
         try:
-            self.bitmap_load = image_handler.to_binary(self.pixmap_load, 0.5)
-            image = image_handler.get_image(self.bitmap_load)
-            self.pixmap_load = QPixmap.fromImage(image)
+            start_time = time.time()
+            self.bitmap_load = image_handler.to_binary(self.pixmap_load, self.threshold)
+            process_time = round(time.time() - start_time, 3)
+
+            #self.bitmap_load = image_handler.get_bitmap(self.pixmap_load.toImage(), self.threshold)
+
+            start_time = time.time()
+            image = image_handler.get_image_by_bitmap(self.bitmap_load)
+            draw_time = round(time.time() - start_time, 3)
+
+            self.pixmap_load = QPixmap(image)
             self.set_pixmap_on_label(self.label_load_image, self.pixmap_load)
-            self.label_status.setText("Изображение преобразовано в чб")
+            self.label_status.setText(f"Изображение преобразовано в чб за {process_time}, отрисовка {draw_time}с")
         except Exception as e:
             print(e)
+            self.label_status.setText(str(e))
+
+    def negative(self):
+        if self.pixmap_load is None:
+            self.label_status.setText("Изображение не загружено")
+            return
+        if self.bitmap_load is None:
+            self.label_status.setText("Создайте бинарное изображение (Ч/Б)")
+            return
+
+        start_time = time.time()
+        self.bitmap_load = image_handler.get_negative_bitmap(self.bitmap_load)
+        process_time = round(time.time() - start_time, 3)
+
+        start_time = time.time()
+        image = image_handler.get_image_by_bitmap(self.bitmap_load)
+        draw_time = round(time.time() - start_time, 3)
+
+        self.pixmap_load = QPixmap(image)
+        self.set_pixmap_on_label(self.label_load_image, self.pixmap_load)
+        self.label_status.setText(f"Изображение преобразовано в негативное за {process_time}, отрисовка {draw_time}с")
 
     def clear(self):
         self.file_path: str = ""
@@ -99,6 +140,7 @@ class Morph(QMainWindow, Ui_MainWindow):
         self.pixmap_processed: QPixmap = None
         self.bitmap_load: np.array = None
         self.bitmap_processed: np.array = None
+        self.horizontal_slider.setValue(self.horizontal_slider.maximum() // 2)
 
         self.label_status.clear()
         self.label_load_image.clear()
@@ -117,11 +159,15 @@ class Morph(QMainWindow, Ui_MainWindow):
 
                 self.bitmap_load = None
                 self.bitmap_processed = None
+
+                print()
+
             except Exception as e:
-                self.label_status.setText(e)
+                self.label_status.setText(str(e))
 
     def save_image(self):
-        file_path, _ = QFileDialog.getSaveFileName(self, "Save Image", f"{self.file_path}", "Image files (*bmp *.png *.jpg)")
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save Image", f"{self.file_path}",
+                                                   "Image files (*bmp *.png *.jpg)")
 
         if file_path:
             image: QImage = self.pixmap_processed.toImage()
@@ -146,6 +192,10 @@ class Morph(QMainWindow, Ui_MainWindow):
     def resizeEvent(self, event):
         self.set_pixmap_on_label(self.label_load_image, self.pixmap_load)
         self.set_pixmap_on_label(self.label_processed_image, self.pixmap_processed)
+
+    def slider_update(self):
+        self.threshold = self.horizontal_slider.value() / 10
+        self.label_slider_value.setText(f"{self.threshold}")
 
 
 if __name__ == '__main__':

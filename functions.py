@@ -9,10 +9,14 @@ def binary_erosion(bitmap: np.ndarray, struct: np.ndarray) -> np.ndarray:
         for x in range(w_struct // 2, w_img - w_struct // 2):
             #  bit = bitmap[y][x]
             bit_is_correct = True
+            #if bitmap[y][x] == struct[h_struct//2][w_struct//2]:
             for y_s in range(-(h_struct//2), h_struct//2 + 1):
                 for x_s in range(-(w_struct//2), w_struct//2 + 1):
                     if bitmap[y+y_s][x+x_s] != struct[y_s+h_struct//2][x_s+w_struct//2]:
                         bit_is_correct = False
+                        break
+                if not bit_is_correct:
+                    break
             if bit_is_correct:
                 new_bitmap[y][x] = 1
     return new_bitmap
