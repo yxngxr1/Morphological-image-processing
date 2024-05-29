@@ -1,3 +1,7 @@
+import numpy as np
+from PyQt5.QtGui import QImage, QColor
+
+
 # def to_binary(pixmap: QPixmap, threshold: float) -> np.ndarray:
 #     temp: QImage = pixmap.toImage()
 #     bitmap: np.array = np.zeros((temp.height(), temp.width()), dtype=np.uint8)
@@ -15,24 +19,22 @@
 #                 else:
 #                     bitmap[y][x] = 1
 #     return bitmap
-import numpy as np
-from PyQt5.QtGui import QImage, QColor
 
 
-def get_image(bitmap: np.array) -> QImage:
-    height = bitmap.shape[0]
-    width = bitmap.shape[1]
-    white: QColor = QColor(255, 255, 255)
-    black: QColor = QColor(0, 0, 0)
-    image: QImage = QImage(width, height, QImage.Format_RGB888)
-    for y in range(height):
-        for x in range(width):
-            bit = bitmap[y][x]
-            if bit == 0:
-                image.setPixelColor(x, y, white)
-            else:
-                image.setPixelColor(x, y, black)
-    return image
+# def get_image(bitmap: np.array) -> QImage:
+#     height = bitmap.shape[0]
+#     width = bitmap.shape[1]
+#     white: QColor = QColor(255, 255, 255)
+#     black: QColor = QColor(0, 0, 0)
+#     image: QImage = QImage(width, height, QImage.Format_RGB888)
+#     for y in range(height):
+#         for x in range(width):
+#             bit = bitmap[y][x]
+#             if bit == 0:
+#                 image.setPixelColor(x, y, white)
+#             else:
+#                 image.setPixelColor(x, y, black)
+#     return image
 
 
 # def get_array_from_image(image: QImage) -> np.ndarray:
@@ -77,19 +79,3 @@ def get_image(bitmap: np.array) -> QImage:
 #                 else:
 #                     bitmap[y][x] = 1
 #     return bitmap
-
-# def get_image_by_bitmap(bitmap: np.ndarray) -> QImage:
-#     height = bitmap.shape[0]
-#     width = bitmap.shape[1]
-#     black = np.zeros((1, 3), dtype=np.uint8)
-#     white = np.full((1, 3), 255, dtype=np.uint8)
-#     im_np = np.zeros((height, width, 3), dtype=np.uint8)
-#     for y in range(height):
-#         for x in range(width):
-#             bit = bitmap[y][x]
-#             if bit == 0:
-#                 im_np[y][x] = white
-#             else:
-#                 im_np[y][x] = black
-#     image = QImage(im_np, im_np.shape[1], im_np.shape[0], im_np.strides[0], QImage.Format_RGB888)
-#     return image.copy()
