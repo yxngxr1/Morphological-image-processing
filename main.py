@@ -43,6 +43,9 @@ class Morph(QMainWindow, Ui_MainWindow):
         super(Morph, self).__init__(parent)
         self.setupUi(self)
 
+        self.window_title = 'Морфологическая обработка изображений'
+        self.setWindowTitle(self.window_title)
+
         self.file_path: str = ""
         self.pixmap_src: QPixmap = None
         self.pixmap_load: QPixmap = None
@@ -68,6 +71,10 @@ class Morph(QMainWindow, Ui_MainWindow):
         self.btn_clear.clicked.connect(self.clear)
         self.btn_negative.clicked.connect(self.negative)
         self.btn_struct_create.clicked.connect(self.struct_create)
+        self.btn_src.clicked.connect(self.show_src)
+
+        self.check_box_auto_process.clicked.connect(self.auto_process)
+        self.check_box_auto_threshold.clicked.connect(self.auto_threshold)
 
         # menu buttons
         self.action_open.triggered.connect(self.open_image)
@@ -266,6 +273,12 @@ class Morph(QMainWindow, Ui_MainWindow):
         self.set_pixmap_on_label(self.label_load_image, self.pixmap_load)
         self.label_status.setText(f"Изображение преобразовано в негативное за {process_time}, отрисовка {draw_time}с")
 
+    def show_src(self):
+        if self.pixmap_src is None:
+            self.label_status.setText("Изображение не загружено")
+            return
+        self.set_pixmap_on_label(self.label_load_image, self.pixmap_src)
+
     def clear(self):
         self.file_path: str = ""
         self.pixmap_src: QPixmap = None
@@ -281,6 +294,8 @@ class Morph(QMainWindow, Ui_MainWindow):
         self.label_load_image.setText("Исходное изображение")
         self.label_processed_image.setText("Изображение после обработки")
 
+        self.setWindowTitle(self.window_title)
+
     def open_image(self):
         file_path, options = QFileDialog.getOpenFileName(self, 'Open image', "", "Image files (*.jpg *.png *bmp *tif)")
         self.file_path = file_path
@@ -293,6 +308,7 @@ class Morph(QMainWindow, Ui_MainWindow):
 
                 self.bitmap_load = None
                 self.bitmap_processed = None
+                self.setWindowTitle(f"{self.window_title} - {file_path.split('/')[-1]} ({self.pixmap_src.width()}x{self.pixmap_src.height()})")
 
             except Exception as e:
                 self.label_status.setText(str(e))
@@ -328,8 +344,21 @@ class Morph(QMainWindow, Ui_MainWindow):
     def slider_update(self):
         self.threshold = self.horizontal_slider.value() / 100
         self.label_slider_value.setText(f"{self.threshold}")
-        self.to_black()
-        self.process()
+
+        if self.check_box_auto_threshold.isChecked():
+            self.to_black()
+            if self.check_box_auto_process.isChecked():
+                self.process()
+
+    def auto_process(self):
+        if self.check_box_auto_process.isChecked():
+            if not self.check_box_auto_threshold.isChecked():
+                self.check_box_auto_threshold.setChecked(True)
+
+    def auto_threshold(self):
+        if not self.check_box_auto_threshold.isChecked():
+            if self.check_box_auto_process.isChecked():
+                self.check_box_auto_process.setChecked(False)
 
 
 if __name__ == '__main__':

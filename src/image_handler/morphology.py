@@ -35,7 +35,8 @@ def binary_dilation(bitmap: np.ndarray, struct: np.ndarray) -> np.ndarray:
             if bitmap[y][x] == 1:
                 for y_s in range(h_struct):
                     for x_s in range(w_struct):
-                        new_bitmap[y + y_s - h_offset][x + x_s - w_offset] = 1 if struct[y_s][x_s] == 1 else new_bitmap[y + y_s - h_offset][x + x_s - w_offset]
+                        if struct[y_s][x_s] == 1:
+                            new_bitmap[y + y_s - h_offset][x + x_s - w_offset] = 1
     return new_bitmap
 
 
