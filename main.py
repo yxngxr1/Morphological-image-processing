@@ -1,11 +1,13 @@
 import sys
 import time
+from pathlib import Path
 
 import numpy as np
-from PyQt5 import QtCore
-from PyQt5.QtCore import QThread, pyqtSignal, QEvent, Qt, QPoint
+from PyQt5 import QtCore, QtWebEngineWidgets
+from PyQt5.QtCore import QThread, pyqtSignal, QEvent, Qt, QPoint, QFile, QTextStream, QUrl
 from PyQt5.QtGui import QPixmap, QImage, QImageWriter, QPainter, QColor
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QLabel, QMessageBox, QDialog, QVBoxLayout, \
+    QTextBrowser
 from skimage.morphology import binary_closing, binary_erosion, binary_dilation, binary_opening, rectangle, disk, \
     octagon, diamond
 
@@ -79,6 +81,8 @@ class Morph(QMainWindow, Ui_MainWindow):
         # menu buttons
         self.action_open.triggered.connect(self.open_image)
         self.action_save.triggered.connect(self.save_image)
+        self.action_about.triggered.connect(self.open_about)
+        self.action_author.triggered.connect(self.open_author)
 
         # slider
         self.horizontal_slider.valueChanged.connect(self.slider_update)
@@ -359,6 +363,63 @@ class Morph(QMainWindow, Ui_MainWindow):
         if not self.check_box_auto_threshold.isChecked():
             if self.check_box_auto_process.isChecked():
                 self.check_box_auto_process.setChecked(False)
+
+    from PyQt5 import QtWebEngineWidgets
+    from pathlib import Path
+
+    def open_about(self):
+        # Создаем диалоговое окно
+        dialog = QDialog(self)
+        dialog.setWindowTitle("О программе")
+        dialog.resize(800, 600)
+
+        # Создаем layout
+        layout = QVBoxLayout()
+
+        # Создаем QWebEngineView
+        view = QtWebEngineWidgets.QWebEngineView()
+
+        try:
+            # Читаем HTML-файл
+            html_path = Path("help_page/about.html")
+            html_content = html_path.read_text(encoding="utf-8")
+
+            base_url = QUrl.fromLocalFile(str(html_path.parent) + "/")
+
+            print(f"HTML path: {html_path}")
+            print(f"Base URL: {base_url}")
+            print(f"Image exists: {Path('help_page/images/ui_form.png').exists()}")
+            html_path = Path("help_page/about.html").absolute()
+            view.load(QUrl.fromLocalFile(str(html_path)))
+        except Exception as e:
+            view.setHtml(f"<h1>Ошибка</h1><p>Не удалось загрузить файл about.html: {str(e)}</p>")
+
+        # Добавляем view в layout
+        layout.addWidget(view)
+        dialog.setLayout(layout)
+
+        dialog.exec_()
+
+    def open_author(self):
+
+        author_info = """
+        <center>
+        <h3>Дипломная работа</h3>
+        <p>Учебно-образовательная программа - базовые морфологические операция над изображениями</p>
+        <br>
+        <p><b>Студент:</b> Дерганов Г.Д.</p>
+        <p><b>Научный руководитель:</b> Кудрина М.А.</p>
+        <p><b>Группа:</b> 6402-090301</p>
+        <p><b>Год:</b> 2025</p>
+        </center>
+        """
+
+        msg = QMessageBox()
+        msg.setWindowTitle("Информация об авторе")
+        msg.setText(author_info)
+        msg.setTextFormat(1)  # 1 означает RichText (HTML-форматирование)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
 
 
 if __name__ == '__main__':

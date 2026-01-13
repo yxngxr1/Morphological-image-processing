@@ -831,7 +831,15 @@
     <addaction name="action_open"/>
     <addaction name="action_save"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Справка</string>
+    </property>
+    <addaction name="action_about"/>
+    <addaction name="action_author"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_open">
@@ -842,6 +850,16 @@
   <action name="action_save">
    <property name="text">
     <string>Сохранить</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>О программе</string>
+   </property>
+  </action>
+  <action name="action_author">
+   <property name="text">
+    <string>Об авторе</string>
    </property>
   </action>
  </widget>
